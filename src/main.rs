@@ -1,6 +1,6 @@
 extern crate image;
 
-use image::{GenericImage, GenericImageView, ImageBuffer};
+use image::{GenericImageView};
 
 type rgba = image::Rgba<u8>;
 
@@ -19,7 +19,7 @@ fn main() {
     let mut input_file_name = String::from("picture.jpg");
     let mut output_file_name = String::from("output.png");
     let mut factor = 4u8;
-
+    
     let mut args_list: Vec<_> = std::env::args().rev().collect();
     args_list.pop();
     while args_list.len() > 0 {
@@ -53,7 +53,7 @@ fn main() {
             let old_pixel = img.get_pixel(x, y);
             let new_pixel = process_pixel(&old_pixel, factor);
             out.put_pixel(x, y, new_pixel);
-
+            
             let mut loss_diference: [i16; 3] = [
                 (old_pixel[0] as i16 - new_pixel[0] as i16).min(0),
                 (old_pixel[1] as i16 - new_pixel[1] as i16).min(0),
@@ -67,6 +67,7 @@ fn main() {
                 let (this_x, this_y) = ((x as i32 + dx[di]) as u32, (y as i32 + dy[di]) as u32);
                 let next_pixel = img.get_pixel(this_x, this_y);
                 let mut modified_pixel: [u8; 4] = [0x00, 0x00, 0x00, 0xFFu8];
+                
                 for i in 0..2 {
                     modified_pixel[i] = ((next_pixel[i] as f64)
                         + ((loss_diference[i] as f64) * (quant[i] / 16f64)))
